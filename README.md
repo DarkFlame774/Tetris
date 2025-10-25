@@ -5,7 +5,7 @@ I tried to make a Tetris Like game in Teminal.
 
 This Game uses WinAPIs so it will not run on platform other than windows.
 
-![Demo Image](/assets/demo.png)
+![Demo Image](/asset/Demo.png)
 
 # Controls:
 
