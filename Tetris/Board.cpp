@@ -74,7 +74,42 @@ void Board::Drawboard(int x, int y)
 	UpperGap();
 }
 
+
+int Board::GetPossibleDestroyableLine() {
+	for (int i = 1; i < BOARD_HEIGHT-1; i++) {
+		bool destroy = false;
+		for (int j = 1; j < BOARD_WIDTH-1; j++) {
+			destroy = false;
+			if (!isFilled(i, j)) break; 
+			destroy = true;
+		}
+		if (destroy) return i;
+	}
+
+	return -1;
+}
+
 //Destroy the line 
+void Board::DestroyPossibleLine() {
+	destroyLine = GetPossibleDestroyableLine();
+	if (destroyLine < 0) return;
+	for (int j = 1; j < BOARD_WIDTH-1; j++) {
+		mBoard[destroyLine][j] = FREE;
+	}
+}
+
+void Board::ShiftExistingPieces() {
+	if (destroyLine < 0) return;
+	for (int i = destroyLine; i > 0; i--) {
+		for (int j = 1; j < BOARD_WIDTH-1; j++) {
+			if (i == 1) {
+				mBoard[i][j] = FREE;
+				continue;
+			}
+			mBoard[i][j] = mBoard[i - 1][j];
+		}
+	}
+}
 
 
 

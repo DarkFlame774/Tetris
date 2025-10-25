@@ -28,9 +28,9 @@ void input() {
 
 		if (!checkColl(x,y+1)) y++;
 	}
-	//if (GetAsyncKeyState('S')) {
-	//	if (!checkColl(x+1,y)) x++;
-	//}
+	if (GetAsyncKeyState('S')) {
+		if (!checkColl(x+1,y)) x++;
+	}
 }
 
 
@@ -41,9 +41,12 @@ void update() {
 		board->DrawPiece(x, y);
 		initialPiece();
 	}
+
 }
 void render() {
+	board->DestroyPossibleLine();
 	board->Drawboard(x,y);
+	board->ShiftExistingPieces();
 }
 
 void start() {
@@ -60,7 +63,7 @@ int main() {
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 }
 

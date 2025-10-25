@@ -16,6 +16,8 @@ public:
 	void DrawPiece(int x,int y);
 	void Drawboard(int x, int y);
 	void initBoard();
+	void DestroyPossibleLine();
+	void ShiftExistingPieces();
 
 private:
 	enum { BORDER, FREE, FILLED };
@@ -23,5 +25,7 @@ private:
 	void SideGap();
 	void UpperGap();
 	void BoardInitial(int i,int x, int y);
-	void DestroyPossibleLine();
+	int destroyLine;
+	int GetPossibleDestroyableLine();
+
 };
