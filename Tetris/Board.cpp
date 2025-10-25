@@ -47,6 +47,19 @@ void Board::SideGap()
 		std::cout << " ";
 	}
 }
+void Board::SideGapWithScore(int i)
+{
+	for (int j = 0; j < SIDE_GAP; j++) {
+		if (j == 3 && i == BOARD_HEIGHT/2) {
+			if (score / 10 == 0) std::cout << "00" << score;
+			else if (score / 10 > 0) std::cout << "0" << score;
+			else std::cout << score;
+			j += 3;
+		}
+		else 
+			std::cout << " ";
+	}
+}
 void Board::BoardInitial(int i,int x,int y) {
 	for (int j = 0; j < BOARD_WIDTH; j++) {
 		if (mBoard[i][j] == BORDER) {
@@ -68,7 +81,7 @@ void Board::Drawboard(int x, int y)
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
 		SideGap();
 		BoardInitial(i,x,y);
-		SideGap();
+		SideGapWithScore(i);
 		std::cout << std::endl;
 	}
 	UpperGap();
@@ -96,6 +109,7 @@ void Board::DestroyPossibleLine() {
 	for (int j = 1; j < BOARD_WIDTH-1; j++) {
 		mBoard[destroyLine][j] = FREE;
 	}
+	score++;
 }
 
 void Board::ShiftExistingPieces() {
@@ -109,6 +123,13 @@ void Board::ShiftExistingPieces() {
 			mBoard[i][j] = mBoard[i - 1][j];
 		}
 	}
+}
+
+bool Board::checkForUpFill() {
+	for (int j = 1; j < BOARD_HEIGHT - 1; j++) {
+		if (mBoard[1][j] == FILLED) return true;
+	}
+	return false;
 }
 
 

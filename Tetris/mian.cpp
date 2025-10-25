@@ -21,26 +21,34 @@ bool checkColl(int x, int y) {
 
 
 void input() {
-	if (GetAsyncKeyState('A')) {
-		if (!checkColl(x,y-1)) y--;
+	int newX = x, newY = y;
+	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
+		newY--;
 	}
-	if (GetAsyncKeyState('D')) {
+	if (GetAsyncKeyState('D')|| (GetAsyncKeyState(VK_RIGHT) & 0x8000)) {
 
-		if (!checkColl(x,y+1)) y++;
+		newY++;
 	}
-	if (GetAsyncKeyState('S')) {
-		if (!checkColl(x+1,y)) x++;
-	}
+	//if (GetAsyncKeyState('S')) {
+	//	if (!checkColl(x+1,y)) x++;
+	//}
+	if (!checkColl(newX, newY)) {x = newX; y = newY;}
+}
+
+void isGameOver() {
+	if (board->checkForUpFill()) isrunning = false;
 }
 
 
 
 void update() {
 	x++;
-	if (checkColl(x+1,y)) {
+	if (checkColl(x,y)) {
+		x--;
 		board->DrawPiece(x, y);
 		initialPiece();
 	}
+	isGameOver();
 
 }
 void render() {
@@ -63,8 +71,10 @@ int main() {
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(25));
 	}
+	std::cout << "Game Over!! Thanks for Playing.";
+	std::cin.get();
 }
 
 
