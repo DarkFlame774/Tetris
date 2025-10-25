@@ -19,10 +19,6 @@ bool checkColl(int x, int y) {
 	return false;
 }
 
-//void DrawPieces() {
-//	if(board->isFree(x, y)) board->DrawPiece(x,y);
-//}
-
 
 void input() {
 	if (GetAsyncKeyState('A')) {
@@ -32,9 +28,9 @@ void input() {
 
 		if (!checkColl(x,y+1)) y++;
 	}
-	if (GetAsyncKeyState('S')) {
-		if (!checkColl(x+1,y)) x++;
-	}
+	//if (GetAsyncKeyState('S')) {
+	//	if (!checkColl(x+1,y)) x++;
+	//}
 }
 
 
