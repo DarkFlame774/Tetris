@@ -14,4 +14,4 @@ This Game uses WinAPIs so it will not run on platform other than windows.
 
 # NOTE
 
-**Do not try to Resize the Console Window as it will break the Printing Process**
+> **Do not try to Resize the Console Window as it will break the Printing Process**
