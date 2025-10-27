@@ -4,6 +4,15 @@
 #include <thread>
 #include "Windows.h"
 
+void hideCursor() {
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+
+	GetConsoleCursorInfo(consoleHandle, &cursorInfo);
+	cursorInfo.bVisible = false;
+	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+}
+
 Board *board;
 
 bool isrunning = true;
@@ -52,6 +61,7 @@ void update() {
 
 }
 void render() {
+	hideCursor();
 	board->DestroyPossibleLine();
 	board->Drawboard(x,y);
 	board->ShiftExistingPieces();
