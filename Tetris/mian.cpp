@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include "Windows.h"
+#include "Pieces.h"
 
 void hideCursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -14,17 +15,27 @@ void hideCursor() {
 }
 
 Board *board;
+Piece* piece;
 
 bool isrunning = true;
-int y = 5;
-int x = 1;
+int y;
+int x;
+int kind;
 void initialPiece() {
 	x = 1;
-	y = rand() % (13 + 1 - 1) + 1;
+	y = rand() % (12 - 2 + 1) + 2;
+	kind = rand() % 3;
+	piece = new Piece();
+	board->piece = piece;
+	piece->CalculatePiecePositions(kind,x, y);
+	
 }
 
-bool checkColl(int x, int y) {
-	if (!board->isFree(x,y)) return true;
+bool checkColl(Piece* piece,int x, int y) {
+	piece->CalculatePiecePositions(kind,x, y);
+	for (int i = 0; i < piece->totalPos; i++) {
+		if (!board->isFree(piece->piecePositions[i][0], piece->piecePositions[i][1])) return true;
+	}
 	return false;
 }
 
@@ -41,20 +52,22 @@ void input() {
 	//if (GetAsyncKeyState('S')) {
 	//	if (!checkColl(x+1,y)) x++;
 	//}
-	if (!checkColl(newX, newY)) {x = newX; y = newY;}
+	if (!checkColl(piece,newX, newY)) {x = newX; y = newY;}
 }
 
 void isGameOver() {
-	if (board->checkForUpFill()) isrunning = false;
+	if (board->checkForUpFill()) 
+		isrunning = false;
 }
 
 
 
 void update() {
 	x++;
-	if (checkColl(x,y)) {
+	piece->CalculatePiecePositions(kind,x, y);
+	if (checkColl(piece,x,y)) {
 		x--;
-		board->DrawPiece(x, y);
+		board->DrawPiece(kind,x, y);
 		initialPiece();
 	}
 	isGameOver();

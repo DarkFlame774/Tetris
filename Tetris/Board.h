@@ -1,4 +1,5 @@
 #pragma once
+#include "Pieces.h"
 
 #define BOARD_WIDTH 15 // Total width of Board
 #define BOARD_HEIGHT 15
@@ -9,11 +10,13 @@
 
 class Board {
 public:
+
+	Piece* piece;
 	int score = 0;
 	bool isFilled(int x, int y);
 	bool isBorder(int x, int y);
 	bool isFree(int x, int y);
-	void DrawPiece(int x,int y);
+	void DrawPiece(int kind, int x,int y);
 	void Drawboard(int x, int y);
 	void initBoard();
 	void DestroyPossibleLine();

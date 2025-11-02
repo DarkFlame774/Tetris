@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Board.h"
 
+
 //Initialize the Board cells with appropriate values;BORDER,FREE,FILLED
 void Board::initBoard() {
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
@@ -29,8 +30,10 @@ bool Board::isFree(int x, int y) {
 }
 
 //make the cell filled with piece
-void Board::DrawPiece(int x, int y) {
-	mBoard[x][y] = FILLED;
+void Board::DrawPiece(int kind, int x, int y) {
+	piece->CalculatePiecePositions(kind,x, y);
+	for(int i = 0; i < piece->totalPos; i++) mBoard[piece->piecePositions[i][0]][piece->piecePositions[i][1]] = FILLED;
+
 }
 
 
@@ -69,7 +72,7 @@ void Board::BoardInitial(int i,int x,int y) {
 			std::cout << "#";
 		}
 		else
-			if (j == y && i == x) std::cout << "#";
+			if (piece->isPiecePosition(i,j)) std::cout << "#";
 			else std::cout << " ";
 	}
 }
@@ -126,7 +129,7 @@ void Board::ShiftExistingPieces() {
 }
 
 bool Board::checkForUpFill() {
-	for (int j = 1; j < BOARD_HEIGHT - 1; j++) {
+	for (int j = 1; j < BOARD_WIDTH - 1; j++) {
 		if (mBoard[1][j] == FILLED) return true;
 	}
 	return false;
