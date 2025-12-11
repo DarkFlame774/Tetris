@@ -3,7 +3,6 @@
 #include <chrono>
 #include <thread>
 #include "Windows.h"
-#include "Pieces.h"
 
 void hideCursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -18,21 +17,23 @@ Board *board;
 Piece* piece;
 
 bool isrunning = true;
-int y;
+int y = BOARD_WIDTH-3;
 int x;
 int kind;
+int Rot = 1;
 void initialPiece() {
 	x = 1;
-	y = rand() % (12 - 2 + 1) + 2;
-	kind = rand() % 3;
+	y = rand() % (BOARD_WIDTH-3 - 2 + 1) + 2;
+	kind = rand() % 7;
+	Rot = 0;
 	piece = new Piece();
 	board->piece = piece;
-	piece->CalculatePiecePositions(kind,x, y);
+	piece->CalculatePiecePositions(kind,Rot,x, y);
 	
 }
 
-bool checkColl(Piece* piece,int x, int y) {
-	piece->CalculatePiecePositions(kind,x, y);
+bool checkColl(Piece* piece,int Rot,int x, int y) {
+	piece->CalculatePiecePositions(kind,Rot,x, y);
 	for (int i = 0; i < piece->totalPos; i++) {
 		if (!board->isFree(piece->piecePositions[i][0], piece->piecePositions[i][1])) return true;
 	}
@@ -41,18 +42,20 @@ bool checkColl(Piece* piece,int x, int y) {
 
 
 void input() {
-	int newX = x, newY = y;
+	int newX = x, newY = y, newRot = Rot;
+	if (GetAsyncKeyState('W')) {
+		newRot = (newRot + 1) % ROTATIONS;
+	}
 	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
 		newY--;
 	}
 	if (GetAsyncKeyState('D')|| (GetAsyncKeyState(VK_RIGHT) & 0x8000)) {
-
 		newY++;
 	}
-	//if (GetAsyncKeyState('S')) {
-	//	if (!checkColl(x+1,y)) x++;
-	//}
-	if (!checkColl(piece,newX, newY)) {x = newX; y = newY;}
+	if (GetAsyncKeyState('S') || (GetAsyncKeyState(VK_DOWN) & 0x8000)) {
+		newX++;
+	}
+	if (!checkColl(piece, newRot, newX, newY)) { x = newX; y = newY; Rot = newRot; }
 }
 
 void isGameOver() {
@@ -64,10 +67,10 @@ void isGameOver() {
 
 void update() {
 	x++;
-	piece->CalculatePiecePositions(kind,x, y);
-	if (checkColl(piece,x,y)) {
+	piece->CalculatePiecePositions(kind,Rot,x, y);
+	if (checkColl(piece,Rot,x,y)) {
 		x--;
-		board->DrawPiece(kind,x, y);
+		board->DrawPiece(kind,Rot,x, y);
 		initialPiece();
 	}
 	isGameOver();
@@ -94,7 +97,7 @@ int main() {
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(25));
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();

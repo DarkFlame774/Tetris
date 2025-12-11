@@ -30,8 +30,8 @@ bool Board::isFree(int x, int y) {
 }
 
 //make the cell filled with piece
-void Board::DrawPiece(int kind, int x, int y) {
-	piece->CalculatePiecePositions(kind,x, y);
+void Board::DrawPiece(int kind,int Rot, int x, int y) {
+	piece->CalculatePiecePositions(kind,Rot,x, y);
 	for(int i = 0; i < piece->totalPos; i++) mBoard[piece->piecePositions[i][0]][piece->piecePositions[i][1]] = FILLED;
 
 }

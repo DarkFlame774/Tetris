@@ -1,11 +1,11 @@
 #include "Pieces.h"
 
-void Piece::SetPiecePositions(int kind) {
+void Piece::SetPiecePositions(int kind,int Rot) {
 	SetPivot(kind);
 	int count = 0;
 	for (int i = 0; i < PIECE_HIGHT; i++) {
 		for (int j = 0; j < PIECE_WIDTH; j++) {
-			if (mPiece[kind][i][j] == 1 || mPiece[kind][i][j] == 2) {
+			if (mPiece[kind][Rot][i][j] == 1 || mPiece[kind][Rot][i][j] == 2) {
 				piecePositions[count][0] = i - mPiecePivot[kind][0];
 				piecePositions[count][1] = j - mPiecePivot[kind][1];
 				count++;
@@ -22,8 +22,8 @@ void Piece::SetPivot(int kind) {
 	}
 }
 
-void Piece::CalculatePiecePositions(int kind, int x, int y) {
-	SetPiecePositions(kind);
+void Piece::CalculatePiecePositions(int kind,int Rot, int x, int y) {
+	SetPiecePositions(kind,Rot);
 	for (int i = 0; i < PIECE_SIZE; i++) {
 		piecePositions[i][0] += x;
 		piecePositions[i][1] += y;
