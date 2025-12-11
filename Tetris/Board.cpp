@@ -1,6 +1,18 @@
 #include <iostream>
 #include "Board.h"
+#include "Windows.h"
 
+Board::Board() {
+	BoardSizeCal();
+}
+
+void Board::BoardSizeCal() {
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	TSCREEN_WIDTH = csbi.srWindow.Right - csbi.srWindow.Left;
+	TSCREEN_HEIGHT = csbi.srWindow.Bottom - csbi.srWindow.Top;
+}
 
 //Initialize the Board cells with appropriate values;BORDER,FREE,FILLED
 void Board::initBoard() {

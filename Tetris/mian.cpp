@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Board.h"
+#include "Windows.h"
 #include <chrono>
 #include <thread>
-#include "Windows.h"
 
 void hideCursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
