@@ -2,7 +2,7 @@
 #include "Pieces.h"
 
 #define BOARD_WIDTH 23 // Total width of Board
-#define BOARD_HEIGHT 25 // Total Height of Board
+#define BOARD_HEIGHT 24 // Total Height of Board
 #define SIDE_GAP (TSCREEN_WIDTH - BOARD_WIDTH) / 2
 #define UPPER_GAP (TSCREEN_HEIGHT - BOARD_HEIGHT) / 2
 

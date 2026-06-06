@@ -4,6 +4,7 @@
 #include <chrono>
 #include <thread>
 
+
 void hideCursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursorInfo;
@@ -13,7 +14,7 @@ void hideCursor() {
 	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 }
 
-Board *board;
+Board* board;
 Piece* piece;
 
 bool isrunning = true;
@@ -43,18 +44,25 @@ bool checkColl(Piece* piece,int Rot,int x, int y) {
 
 void input() {
 	int newX = x, newY = y, newRot = Rot;
-	if (GetAsyncKeyState('W')) {
+	if (GetAsyncKeyState(' ')) {
 		newRot = (newRot + 1) % ROTATIONS;
 	}
 	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
+		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
+			newY-=2;
+	   }
 		newY--;
 	}
 	if (GetAsyncKeyState('D')|| (GetAsyncKeyState(VK_RIGHT) & 0x8000)) {
+		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
+			newY += 2;
+		}
 		newY++;
 	}
 	if (GetAsyncKeyState('S') || (GetAsyncKeyState(VK_DOWN) & 0x8000)) {
 		newX++;
 	}
+
 	if (!checkColl(piece, newRot, newX, newY)) { x = newX; y = newY; Rot = newRot; }
 }
 
@@ -66,7 +74,9 @@ void isGameOver() {
 
 
 void update() {
-	x++;
+
+
+   x++;
 	piece->CalculatePiecePositions(kind,Rot,x, y);
 	if (checkColl(piece,Rot,x,y)) {
 		x--;
@@ -74,6 +84,7 @@ void update() {
 		initialPiece();
 	}
 	isGameOver();
+
 
 }
 void render() {
@@ -97,7 +108,7 @@ int main() {
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();
