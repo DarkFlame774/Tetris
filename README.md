@@ -15,6 +15,7 @@ This Game uses WinAPIs so it will not run on platform other than windows.
 
 **A or <-(Arrow)** :- Move piece to left   
 **D or ->(Arrow)** :- Moves piece to right
+**Space** :- Rotates the Piece
 
 # NOTE
 
