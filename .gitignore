@@ -361,3 +361,55 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ===========================
+# Spring Boot / Maven
+# ===========================
+
+/Backend/HELP.md
+/Backend/target/
+/Backend/.mvn/wrapper/maven-wrapper.jar
+
+!/Backend/**/src/main/**/target/
+!/Backend/**/src/test/**/target/
+
+# ===========================
+# STS
+# ===========================
+
+/Backend/.apt_generated
+/Backend/.classpath
+/Backend/.factorypath
+/Backend/.project
+/Backend/.settings/
+/Backend/.springBeans
+/Backend/.sts4-cache
+
+# ===========================
+# IntelliJ IDEA
+# ===========================
+
+/Backend/.idea/
+/Backend/*.iws
+/Backend/*.iml
+/Backend/*.ipr
+
+# ===========================
+# NetBeans
+# ===========================
+
+/Backend/nbproject/private/
+/Backend/nbbuild/
+/Backend/dist/
+/Backend/nbdist/
+/Backend/.nb-gradle/
+/Backend/build/
+
+!/Backend/**/src/main/**/build/
+!/Backend/**/src/test/**/build/
+
+# ===========================
+# VS Code
+# ===========================
+
+/Backend/.vscode/
