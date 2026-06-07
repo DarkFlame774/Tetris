@@ -6,6 +6,7 @@ import com.abhinav.tetris.dto.RegisterRequest;
 import com.abhinav.tetris.model.Player;
 import com.abhinav.tetris.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,10 +16,12 @@ import java.util.Optional;
 @Service
 public class PlayerService {
     private final PlayerRepository playerRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepo) {
+    public PlayerService(PlayerRepository playerRepo, PasswordEncoder passwordEncoder) {
         this.playerRepo = playerRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void registerPlayer(RegisterRequest request){
@@ -29,7 +32,8 @@ public class PlayerService {
 
         Player player = Player.builder()
                 .playerName(request.name())
-                .hashPasswd(request.password())
+                .hashPasswd(
+                        passwordEncoder.encode(request.password()))
                 .registeredAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -43,7 +47,7 @@ public class PlayerService {
                 .orElseThrow(() ->
                         new IllegalStateException("Player does not exist"));
 
-        if(!Objects.equals(request.password(), player.getHashPasswd())){
+        if(!passwordEncoder.matches(request.password(), player.getHashPasswd())){
             throw new IllegalStateException("Wrong Password. Try again");
         }
 
