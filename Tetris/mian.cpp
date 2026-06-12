@@ -1,21 +1,27 @@
-#include <iostream>
-#include "Board.h"
+
+#include "GameScreen.h"
 #include "Windows.h"
 #include <chrono>
 #include <thread>
 
 
-void hideCursor() {
+void static hideCursor() {
+#ifdef WIN32
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursorInfo;
 
 	GetConsoleCursorInfo(consoleHandle, &cursorInfo);
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+#else
+	std::cout << "\033[?25l";
+
+#endif
 }
 
 Board* board;
 Piece* piece;
+GameScreen* screen;
 
 bool isrunning = true;
 int y = BOARD_WIDTH-3;
@@ -77,7 +83,6 @@ void update() {
 
 
    x++;
-	piece->CalculatePiecePositions(kind,Rot,x, y);
 	if (checkColl(piece,Rot,x,y)) {
 		x--;
 		board->DrawPiece(kind,Rot,x, y);
@@ -89,16 +94,28 @@ void update() {
 }
 void render() {
 	hideCursor();
+	bool flash = false;
 	board->DestroyPossibleLine();
-	board->Drawboard(x,y);
+	if (board->destroy) {
+		screen->projectBoard(board);
+		screen->Flashing(board);
+		flash = true;
+	}
 	board->ShiftExistingPieces();
+	screen->projectBoard(board);
+	if(flash) std::cout << "\033[J\033[H";
+	screen->DrawScreen(board);
+
 }
 
 void start() {
 	board = new Board();
+	screen = new GameScreen();
 	board->initBoard();
 	initialPiece();
-	board->Drawboard(x, y);
+	screen->initScreen();
+	screen->projectBoard(board);
+	screen->DrawScreen(board);
 }
 
 int main() {
@@ -112,6 +129,7 @@ int main() {
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();
+	return 0;
 }
 
 

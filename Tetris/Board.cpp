@@ -2,17 +2,6 @@
 #include "Board.h"
 #include "Windows.h"
 
-Board::Board() {
-	BoardSizeCal();
-}
-
-void Board::BoardSizeCal() {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	TSCREEN_WIDTH = csbi.srWindow.Right - csbi.srWindow.Left;
-	TSCREEN_HEIGHT = csbi.srWindow.Bottom - csbi.srWindow.Top;
-}
 
 //Initialize the Board cells with appropriate values;BORDER,FREE,FILLED
 void Board::initBoard() {
@@ -49,63 +38,9 @@ void Board::DrawPiece(int kind,int Rot, int x, int y) {
 }
 
 
-void Board::UpperGap() {
-	for (int i = 0; i < UPPER_GAP; i++) {
-		std::cout << std::endl;
-	}
-}
-
-//responisible for drawing Board
-void Board::SideGap()
-{
-	for (int j = 0; j < SIDE_GAP; j++) {
-		std::cout << " ";
-	}
-}
-void Board::SideGapWithScore(int i)
-{
-	for (int j = 0; j < SIDE_GAP; j++) {
-		if (j == 3 && i == BOARD_HEIGHT/2) {
-			if (score / 10 == 0) std::cout << "00" << score;
-			else if (score / 10 > 0) std::cout << "0" << score;
-			else std::cout << score;
-			j += 3;
-		}
-		else 
-			std::cout << " ";
-	}
-}
-void Board::BoardInitial(int i,int x,int y) {
-	for (int j = 0; j < BOARD_WIDTH; j++) {
-		if (mBoard[i][j] == BORDER) {
-			std::cout << "*";
-		}
-		else if (mBoard[i][j] == FILLED) {
-			std::cout << "#";
-		}
-		else
-			if (piece->isPiecePosition(i,j)) std::cout << "#";
-			else std::cout << " ";
-	}
-}
-
-//Draws the board
-void Board::Drawboard(int x, int y)
-{
-	UpperGap();
-	for (int i = 0; i < BOARD_HEIGHT; i++) {
-		SideGap();
-		BoardInitial(i,x,y);
-		SideGapWithScore(i);
-		std::cout << std::endl;
-	}
-	UpperGap();
-}
-
-
 int Board::GetPossibleDestroyableLine() {
 	for (int i = 1; i < BOARD_HEIGHT-1; i++) {
-		bool destroy = false;
+		destroy = false;
 		for (int j = 1; j < BOARD_WIDTH-1; j++) {
 			destroy = false;
 			if (!isFilled(i, j)) break; 
