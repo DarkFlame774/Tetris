@@ -59,7 +59,6 @@ void Board::DestroyPossibleLine() {
 	for (int j = 1; j < BOARD_WIDTH-1; j++) {
 		mBoard[destroyLine][j] = FREE;
 	}
-	score++;
 }
 
 void Board::ShiftExistingPieces() {

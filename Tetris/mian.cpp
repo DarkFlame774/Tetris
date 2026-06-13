@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 
+int score = 0;
+int linesDestroy = 0;
 
 void static hideCursor() {
 #ifdef WIN32
@@ -100,10 +102,12 @@ void render() {
 		screen->projectBoard(board);
 		screen->Flashing(board);
 		flash = true;
+		score += 10;
+		linesDestroy++;
 	}
 	board->ShiftExistingPieces();
 	screen->projectBoard(board);
-	if(flash) std::cout << "\033[J\033[H";
+	screen->projectStats(score,linesDestroy);
 	screen->DrawScreen(board);
 
 }
@@ -115,17 +119,19 @@ void start() {
 	initialPiece();
 	screen->initScreen();
 	screen->projectBoard(board);
+	screen->projectStats(score, linesDestroy);
 	screen->DrawScreen(board);
 }
 
 int main() {
+	SetConsoleOutputCP(CP_UTF8);
 	start();
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(150));
+		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();

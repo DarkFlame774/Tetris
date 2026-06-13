@@ -15,6 +15,7 @@ class GameScreen {
 		int mScreen[SCREEN_HEIGHT][SCREEN_WIDTH];
 		void DrawScreen(Board* board);
 		void projectBoard(Board* board);
+		void projectStats(int score, int line);
 		bool CheckForPiece(Board* board,int x, int y);
 		void Flashing(Board* board);
 
