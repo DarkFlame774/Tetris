@@ -22,29 +22,38 @@ void static hideCursor() {
 }
 
 Board* board;
-Piece* piece;
+Piece* piece = new Piece();
 GameScreen* screen;
 
 bool isrunning = true;
 int y = BOARD_WIDTH-3;
 int x;
-int kind;
-int Rot = 1;
+int kind = -1;
+int nextKind;
+int nextRot;
+int Rot = -1;
 void initialPiece() {
 	x = 1;
-	y = rand() % (BOARD_WIDTH-3 - 2 + 1) + 2;
-	kind = rand() % 7;
-	Rot = 0;
-	piece = new Piece();
+	y = rand() % (BOARD_WIDTH - 3 - 2 + 1) + 2;
+	if (kind = -1 && Rot == -1) {
+		kind = rand() % 7;
+		Rot = rand() % 4;
+	}
+	else {
+		kind = nextKind;
+		Rot = nextRot;
+	}
+	nextKind = rand() % 7;
+	nextRot = rand() % 4;
 	board->piece = piece;
-	piece->CalculatePiecePositions(kind,Rot,x, y);
+	board->piece->CalculatePiecePositions(kind,Rot,x, y);
 	
 }
 
 bool checkColl(Piece* piece,int Rot,int x, int y) {
-	piece->CalculatePiecePositions(kind,Rot,x, y);
-	for (int i = 0; i < piece->totalPos; i++) {
-		if (!board->isFree(piece->piecePositions[i][0], piece->piecePositions[i][1])) return true;
+	board->piece->CalculatePiecePositions(kind,Rot,x, y);
+	for (int i = 0; i < board->piece->totalPos; i++) {
+		if (!board->isFree(board->piece->piecePositions[i][0], board->piece->piecePositions[i][1])) return true;
 	}
 	return false;
 }
@@ -108,6 +117,7 @@ void render() {
 	board->ShiftExistingPieces();
 	screen->projectBoard(board);
 	screen->projectStats(score,linesDestroy);
+	screen->projectNextPiece(piece, nextKind, nextRot);
 	screen->DrawScreen(board);
 
 }
@@ -120,6 +130,7 @@ void start() {
 	screen->initScreen();
 	screen->projectBoard(board);
 	screen->projectStats(score, linesDestroy);
+	screen->projectNextPiece(piece,nextKind, nextRot);
 	screen->DrawScreen(board);
 }
 

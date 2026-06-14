@@ -212,10 +212,17 @@ public:
 
 	bool isPiecePosition(int i, int j);
 
+	int GetPiecePivotX(int kind);
+	int GetPiecePivotY(int kind);
+
 
 private:
 	int mPiecePivot[PIECE_KIND][2] =
 	{
+		{1,1},
+		{1,1},
+		{1,1},
+		{1,1},
 		{1,1},
 		{1,1},
 		{1,1}

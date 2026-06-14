@@ -7,6 +7,9 @@
 #define SCREEN_HEIGHT 28 // Mostly deafult total height of default windowed terminal
 #define BOARD_PADDING_UP 4
 #define BOARD_PADDING_SIDE 40
+#define PIECE_PADDING_UP 7
+#define PIECE_PADDING_SIDE 75
+
 
 class GameScreen {
 	public:
@@ -16,6 +19,7 @@ class GameScreen {
 		void DrawScreen(Board* board);
 		void projectBoard(Board* board);
 		void projectStats(int score, int line);
+		void projectNextPiece(Piece* piece, int kind, int rot);
 		bool CheckForPiece(Board* board,int x, int y);
 		void Flashing(Board* board);
 

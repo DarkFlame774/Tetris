@@ -1,24 +1,26 @@
 #include "GameScreen.h"
 #include <string>
+
 int tetris_x = 1;
 int tetris_y = 42;
 std::string tetris_str = "!!TERMINAL TETRIS!!";
 
-int left_text_pad = 5;
+int left_text_pad = 7;
+int ui_start_x = 3;
 
-int name_x = 3;
+int name_x = ui_start_x + 1;
 std::string name_str = "Player_1";
 
-int score_x = 4;
+int score_x = ui_start_x + 2;
 std::string score_str = "";
 
-int line_x = 5;
+int line_x = ui_start_x + 3;
 std::string line_str = "";
 
 int ruleBox_start_x = 10;
 int ruleBox_start_y = 7;
 int ruleBox_length = 8;
-int ruleBox_width = 25;
+int ruleBox_width = 26;
 
 int ruleBox_ruleText_x = ruleBox_start_x + 1;
 int ruleBox_ruleText_y = ruleBox_start_y + 7;
@@ -27,16 +29,25 @@ std::string ruleBox_RuleText_str = "!!Controls!!";
 int ruleBox_controlPad = ruleBox_start_y + 3;
 
 int ruleBox_controlLeft_x = ruleBox_ruleText_x + 2;
-std::string ruleBox_controlLeft_str = "A - Move Left";
+std::string ruleBox_controlLeft_str = "A / -> - Move Left";
 
 int ruleBox_controlRight_x = ruleBox_ruleText_x + 3;
-std::string ruleBox_controlRight_str = "D - Move Right";
+std::string ruleBox_controlRight_str = "D / -> - Move Right";
 
 int ruleBox_controlDown_x = ruleBox_ruleText_x + 4;
-std::string ruleBox_controlDown_str = "S - Decend Faster";
+std::string ruleBox_controlDown_str = "S / v  - Decend Faster";
 
 int ruleBox_controlRotate_x = ruleBox_ruleText_x + 5;
-std::string ruleBox_controlRotate_str = "Space - Rotate Piece";
+std::string ruleBox_controlRotate_str = "Space  - Rotate Piece";
+
+int pieceBox_start_x = PIECE_PADDING_UP - 2;
+int pieceBox_start_y = PIECE_PADDING_SIDE - 3;
+int pieceBox_length = 6;
+int pieceBox_width = 9;
+
+int nextPiece_start_x = pieceBox_start_x + pieceBox_length+1;
+int nextPiece_start_y = pieceBox_start_y - 2;
+std::string nextPiece_str = "!!Next Piece!!";
 
 void GameScreen::initScreen() {
 	for (int i = 0; i < SCREEN_HEIGHT; i++) {
@@ -53,6 +64,12 @@ void GameScreen::initScreen() {
 			        && (j >= ruleBox_start_y && j <= ruleBox_start_y + ruleBox_width)
 					|| (j == ruleBox_start_y || j == ruleBox_start_y + ruleBox_width)
 					&& (i >= ruleBox_start_x && i < ruleBox_start_x + ruleBox_length)) {
+				mScreen[i][j] = BORDER;
+			}
+			 else if ( (i == pieceBox_start_x || i == pieceBox_start_x + pieceBox_length)
+			        && (j >= pieceBox_start_y && j <= pieceBox_start_y + pieceBox_width)
+					|| (j == pieceBox_start_y || j == pieceBox_start_y + pieceBox_width)
+					&& (i >= pieceBox_start_x && i < pieceBox_start_x + pieceBox_length)) {
 				mScreen[i][j] = BORDER;
 			}
 			else mScreen[i][j] = NETHER;
@@ -103,6 +120,10 @@ void GameScreen::DrawScreen(Board* board) {
 			else if (i == ruleBox_controlRotate_x && j == ruleBox_controlPad) {
 				std::cout << ruleBox_controlRotate_str;
 				j += ruleBox_controlRotate_str.size()-1;
+			}
+			else if (i == nextPiece_start_x && j == nextPiece_start_y) {
+				std::cout << nextPiece_str;
+				j += nextPiece_str.size()-1;
 			}
 			else if (mScreen[i][j] == FILLED || CheckForPiece(board, i, j)) std::cout << "#";
 			else if (mScreen[i][j] == FREE) {
@@ -176,4 +197,14 @@ void GameScreen::Flashing(Board* board)
 	std::cout << "\033[J\033[H";
 	DrawScreen(board);
 	std::cout << "\033[J\033[H";
+}
+
+void GameScreen::projectNextPiece(Piece* piece, int kind, int rot) {
+	for (int i = 0; i < PIECE_HIGHT; i++) {
+		for (int j = 0; j < PIECE_WIDTH; j++) {
+			mScreen[PIECE_PADDING_UP + i][PIECE_PADDING_SIDE + j] = piece->mPiece[kind][rot][i][j] + 2;
+			if (i == piece->GetPiecePivotX(kind) && j == piece->GetPiecePivotY(kind)) 
+				mScreen[PIECE_PADDING_UP + i][PIECE_PADDING_SIDE + j] -= 1;
+		}
+	}
 }

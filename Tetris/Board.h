@@ -6,7 +6,7 @@
 
 class Board {
 public:
-	Piece* piece;;
+	Piece* piece;
 	bool isFilled(int x, int y);
 	bool isBorder(int x, int y);
 	bool isFree(int x, int y);
