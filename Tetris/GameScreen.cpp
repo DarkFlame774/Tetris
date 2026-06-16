@@ -166,14 +166,14 @@ void GameScreen::Flash() {
 
 void GameScreen::projectStats(int score, int lines) {
 	if (score == 0) {
-		score_str = "Score - 00";
+		score_str = "Score     - 00";
 	}
 	else {
-		score_str = "Score - " + std::to_string(score);
+		score_str = "Score     - " + std::to_string(score);
 	}
 
 	if (lines == 0) {
-		line_str = "Lines Cleared - 00";
+		line_str = "Lines Clr - 00";
 	}
 	else {
 		line_str = "Lines Cleared - " + std::to_string(lines);

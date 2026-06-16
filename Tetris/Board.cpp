@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Board.h"
-#include "Windows.h"
 
 
 //Initialize the Board cells with appropriate values;BORDER,FREE,FILLED

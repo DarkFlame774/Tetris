@@ -1,8 +1,5 @@
-
+#include <Windows.h>
 #include "GameScreen.h"
-#include "Windows.h"
-#include <chrono>
-#include <thread>
 
 int score = 0;
 int linesDestroy = 0;
@@ -61,7 +58,7 @@ bool checkColl(Piece* piece,int Rot,int x, int y) {
 
 void input() {
 	int newX = x, newY = y, newRot = Rot;
-	if (GetAsyncKeyState(' ')) {
+	if (GetAsyncKeyState(VK_SPACE)) {
 		newRot = (newRot + 1) % ROTATIONS;
 	}
 	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
@@ -136,6 +133,7 @@ void start() {
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
+	SETUP_TERMINAL;
 	start();
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
@@ -145,6 +143,7 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
+	RESTORE_TERMINAL;
 	std::cin.get();
 	return 0;
 }
