@@ -133,7 +133,6 @@ void start() {
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
-	SETUP_TERMINAL;
 	start();
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
@@ -143,7 +142,6 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
-	RESTORE_TERMINAL;
 	std::cin.get();
 	return 0;
 }
