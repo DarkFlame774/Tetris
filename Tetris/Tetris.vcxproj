@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="GameScreen.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="mian.cpp" />
     <ClCompile Include="Pieces.cpp" />
     <ClCompile Include="Test.cpp" />
@@ -132,7 +133,9 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="GameScreen.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Pieces.h" />
+    <ClInclude Include="Terminal.h" />
     <ClInclude Include="Test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

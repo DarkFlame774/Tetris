@@ -1,8 +1,17 @@
-#include <Windows.h>
+#include "Input.h"
 #include "GameScreen.h"
+typedef std::chrono::steady_clock sclock;
+typedef std::chrono::milliseconds milisec;
+typedef std::chrono::steady_clock::time_point timep;
+
+timep now = sclock::now();
+timep lastUpdate = now;
 
 int score = 0;
 int linesDestroy = 0;
+
+char input = '\n';
+
 
 void static hideCursor() {
 #ifdef WIN32
@@ -55,29 +64,38 @@ bool checkColl(Piece* piece,int Rot,int x, int y) {
 	return false;
 }
 
+void Input() {
+	if (Input::GetKeyState(Key::Space)) {
+		input = ' ';
+	}
+	if (Input::GetKeyState(Key::Left)) {
+		input = 'a';
+	}
+	if (Input::GetKeyState(Key::Right)) {
+		input = 'd';
+	}
+	if (Input::GetKeyState(Key::Down)) {
+		input = 's';
+	}
+}
 
-void input() {
+void Handleinput() {
 	int newX = x, newY = y, newRot = Rot;
-	if (GetAsyncKeyState(VK_SPACE)) {
+	if (input == ' ') {
 		newRot = (newRot + 1) % ROTATIONS;
 	}
-	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
-		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
-			newY-=2;
-	   }
+	if (input == 'a') {
 		newY--;
 	}
-	if (GetAsyncKeyState('D')|| (GetAsyncKeyState(VK_RIGHT) & 0x8000)) {
-		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
-			newY += 2;
-		}
+	if (input == 'd') {
 		newY++;
 	}
-	if (GetAsyncKeyState('S') || (GetAsyncKeyState(VK_DOWN) & 0x8000)) {
+	if (input == 's') {
 		newX++;
 	}
 
 	if (!checkColl(piece, newRot, newX, newY)) { x = newX; y = newY; Rot = newRot; }
+	input = '\n';
 }
 
 void isGameOver() {
@@ -88,9 +106,8 @@ void isGameOver() {
 
 
 void update() {
-
-
-   x++;
+	Handleinput();
+	x++;
 	if (checkColl(piece,Rot,x,y)) {
 		x--;
 		board->DrawPiece(kind,Rot,x, y);
@@ -132,17 +149,22 @@ void start() {
 }
 
 int main() {
-	SetConsoleOutputCP(CP_UTF8);
+	SETUP_TERMINAL;
 	start();
 	while (isrunning) {
-		std::cout << "\033[J\033[H";
-		input();
-		update();
-		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(120));
+		now = sclock::now();
+		Input();
+		if(now - lastUpdate >= milisec(150)){
+			std::cout << "\033[J\033[H";
+			update();
+			render();
+			lastUpdate = now;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(16));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();
+	RESTORE_TERMINAL;
 	return 0;
 }
 
