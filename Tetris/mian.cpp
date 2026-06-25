@@ -65,16 +65,17 @@ bool checkColl(Piece* piece,int Rot,int x, int y) {
 }
 
 void Input() {
-	if (Input::GetKeyState(Key::Space)) {
+	Key key = Input::GetKey();
+	if (key == Key::Space) {
 		input = ' ';
 	}
-	if (Input::GetKeyState(Key::Left)) {
+	else if (key == Key::Left) {
 		input = 'a';
 	}
-	if (Input::GetKeyState(Key::Right)) {
+	else if (key == Key::Right) {
 		input = 'd';
 	}
-	if (Input::GetKeyState(Key::Down)) {
+	else if (key == Key::Down) {
 		input = 's';
 	}
 }
@@ -163,8 +164,9 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(16));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
-	std::cin.get();
 	RESTORE_TERMINAL;
+	std::cin.get();
+
 	return 0;
 }
 

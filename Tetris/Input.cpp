@@ -1,4 +1,5 @@
 #include "Input.h"
+#include <iostream>
 #ifndef _WIN32
 	termios oldTerm;
 
@@ -9,42 +10,43 @@
 
 #endif
 
-bool Input::GetKeyState(Key key) {
-	return HandleInput(key);
+Key Input::GetKey() {
+#ifdef _WIN32 
+    if (GetAsyncKeyState('D') || (GetAsyncKeyState(VK_RIGHT) & 0x8000)) return Key::Right;
+    else if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) return Key::Left;
+    else if (GetAsyncKeyState('S') || (GetAsyncKeyState(VK_DOWN) & 0x8000)) return Key::Down;
+    else if (GetAsyncKeyState(VK_SPACE)) return Key::Space;
+    else return Key::None;
+
+#else
+    char c1;
+    if (read(STDIN_FILENO, &c1, 1) <= 0) return Key::None;
+    else std::cout << "(" << c1 << ")";
+    switch (c1)
+    {
+    case 'd':
+    case 'D':
+        std::cout << " RIGHT ";
+        return Key::Right;
+
+    case 'a':
+    case 'A':
+        std::cout << " LEFT ";
+        return Key::Left;
+
+    case 's':
+    case 'S':
+        std::cout << " DOWN ";
+        return Key::Down;
+
+    case ' ':
+        std::cout << " SPACE ";
+        return Key::Space;
+
+    default:
+        std::cout << " NONE ";
+        return Key::None;
+    }
+#endif
 }
 
-bool HandleInput(Key key) {
-	#ifdef _WIN32 
-		switch (key) {
-			case Key::Right :
-				return (GetAsyncKeyState('D') || (GetAsyncKeyState(VK_RIGHT) & 0x8000));
-			case Key::Left :
-				return (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000));
-			case Key::Down :
-				return (GetAsyncKeyState('S') || (GetAsyncKeyState(VK_DOWN) & 0x8000));
-			case Key::Space :
-				return (GetAsyncKeyState(VK_SPACE));
-			default:
-				return false;
-		}
-	#else
-		char c1;
-		if (read(STDIN_FILENO, &c1, 1)) return false;
-		switch (key) {
-			case Key::Right:
-				return (c1 == 'd');
-		
-			case Key::Left:
-				return (c1 == 'a');
-		
-			case Key::Down:
-				return (c1 == 's');
-		
-			case Key::Space:
-				return (c1 == ' ');
-		
-			default:
-				return false;
-		}
-	#endif
-}

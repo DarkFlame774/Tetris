@@ -1,10 +1,10 @@
 #pragma once
 #include "Terminal.h"
 
-enum Key {Right,Left,Down,Up,Space};
+enum Key {None,Right,Left,Down,Space};
 
 class Input {
 	public:
-		static bool GetKeyState(Key key);
+		static Key GetKey();
 };
-bool HandleInput(Key key);
+Key PollInput();
