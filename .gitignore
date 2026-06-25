@@ -413,3 +413,5 @@ FodyWeavers.xsd
 # ===========================
 
 /Backend/.vscode/
+/Tetris/Test.cpp
+/Tetris/Test.h
