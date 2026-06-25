@@ -1,42 +1,56 @@
-#include <iostream>
-#include "Board.h"
-#include "Windows.h"
-#include <chrono>
-#include <thread>
+#include <Windows.h>
+#include "GameScreen.h"
 
+int score = 0;
+int linesDestroy = 0;
 
-void hideCursor() {
+void static hideCursor() {
+#ifdef WIN32
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursorInfo;
 
 	GetConsoleCursorInfo(consoleHandle, &cursorInfo);
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+#else
+	std::cout << "\033[?25l";
+
+#endif
 }
 
 Board* board;
-Piece* piece;
+Piece* piece = new Piece();
+GameScreen* screen;
 
 bool isrunning = true;
 int y = BOARD_WIDTH-3;
 int x;
-int kind;
-int Rot = 1;
+int kind = -1;
+int nextKind;
+int nextRot;
+int Rot = -1;
 void initialPiece() {
 	x = 1;
-	y = rand() % (BOARD_WIDTH-3 - 2 + 1) + 2;
-	kind = rand() % 7;
-	Rot = 0;
-	piece = new Piece();
+	y = rand() % (BOARD_WIDTH - 3 - 2 + 1) + 2;
+	if (kind = -1 && Rot == -1) {
+		kind = rand() % 7;
+		Rot = rand() % 4;
+	}
+	else {
+		kind = nextKind;
+		Rot = nextRot;
+	}
+	nextKind = rand() % 7;
+	nextRot = rand() % 4;
 	board->piece = piece;
-	piece->CalculatePiecePositions(kind,Rot,x, y);
+	board->piece->CalculatePiecePositions(kind,Rot,x, y);
 	
 }
 
 bool checkColl(Piece* piece,int Rot,int x, int y) {
-	piece->CalculatePiecePositions(kind,Rot,x, y);
-	for (int i = 0; i < piece->totalPos; i++) {
-		if (!board->isFree(piece->piecePositions[i][0], piece->piecePositions[i][1])) return true;
+	board->piece->CalculatePiecePositions(kind,Rot,x, y);
+	for (int i = 0; i < board->piece->totalPos; i++) {
+		if (!board->isFree(board->piece->piecePositions[i][0], board->piece->piecePositions[i][1])) return true;
 	}
 	return false;
 }
@@ -44,7 +58,7 @@ bool checkColl(Piece* piece,int Rot,int x, int y) {
 
 void input() {
 	int newX = x, newY = y, newRot = Rot;
-	if (GetAsyncKeyState(' ')) {
+	if (GetAsyncKeyState(VK_SPACE)) {
 		newRot = (newRot + 1) % ROTATIONS;
 	}
 	if (GetAsyncKeyState('A') || (GetAsyncKeyState(VK_LEFT) & 0x8000)) {
@@ -77,7 +91,6 @@ void update() {
 
 
    x++;
-	piece->CalculatePiecePositions(kind,Rot,x, y);
 	if (checkColl(piece,Rot,x,y)) {
 		x--;
 		board->DrawPiece(kind,Rot,x, y);
@@ -89,29 +102,48 @@ void update() {
 }
 void render() {
 	hideCursor();
+	bool flash = false;
 	board->DestroyPossibleLine();
-	board->Drawboard(x,y);
+	if (board->destroy) {
+		screen->projectBoard(board);
+		screen->Flashing(board);
+		flash = true;
+		score += 10;
+		linesDestroy++;
+	}
 	board->ShiftExistingPieces();
+	screen->projectBoard(board);
+	screen->projectStats(score,linesDestroy);
+	screen->projectNextPiece(piece, nextKind, nextRot);
+	screen->DrawScreen(board);
+
 }
 
 void start() {
 	board = new Board();
+	screen = new GameScreen();
 	board->initBoard();
 	initialPiece();
-	board->Drawboard(x, y);
+	screen->initScreen();
+	screen->projectBoard(board);
+	screen->projectStats(score, linesDestroy);
+	screen->projectNextPiece(piece,nextKind, nextRot);
+	screen->DrawScreen(board);
 }
 
 int main() {
+	SetConsoleOutputCP(CP_UTF8);
 	start();
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
 		input();
 		update();
 		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(150));
+		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	std::cin.get();
+	return 0;
 }
 
 
