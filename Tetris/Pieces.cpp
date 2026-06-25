@@ -36,3 +36,10 @@ bool Piece::isPiecePosition(int i, int j) {
 	}
 	return false;
 }
+
+int Piece::GetPiecePivotX(int kind) {
+	return mPiecePivot[kind][0];
+}
+int Piece::GetPiecePivotY(int kind) {
+	return mPiecePivot[kind][1];
+}

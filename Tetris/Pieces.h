@@ -1,8 +1,8 @@
 #pragma once
 
 #define PIECE_SIZE 4
-#define PIECE_HIGHT 4
-#define PIECE_WIDTH 4
+#define PIECE_HIGHT 3
+#define PIECE_WIDTH 3
 #define PIECE_KIND 7
 #define ROTATIONS 4
 
@@ -212,10 +212,17 @@ public:
 
 	bool isPiecePosition(int i, int j);
 
+	int GetPiecePivotX(int kind);
+	int GetPiecePivotY(int kind);
+
 
 private:
 	int mPiecePivot[PIECE_KIND][2] =
 	{
+		{1,1},
+		{1,1},
+		{1,1},
+		{1,1},
 		{1,1},
 		{1,1},
 		{1,1}
