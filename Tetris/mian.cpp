@@ -131,7 +131,7 @@ void start() {
 	screen->DrawScreen(board);
 }
 
-int main() {
+int Main() {
 	SetConsoleOutputCP(CP_UTF8);
 	start();
 	while (isrunning) {

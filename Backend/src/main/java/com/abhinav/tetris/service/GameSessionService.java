@@ -26,7 +26,7 @@ public class GameSessionService {
     }
 
     public StartGameSessionResponse startGameSession(StartGameSessionRequest request){
-        Player player = playerRepo.findByPlayerName(request.name())
+        Player player = playerRepo.findById(request.id())
                 .orElseThrow(() ->
                         new IllegalStateException("Invalid Session"));
 

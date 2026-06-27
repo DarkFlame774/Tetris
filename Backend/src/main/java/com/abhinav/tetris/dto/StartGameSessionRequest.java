@@ -5,6 +5,5 @@ import jakarta.validation.constraints.Size;
 
 public record StartGameSessionRequest(
         @NotBlank
-        @Size(min = 1, max = 15)
-        String name
+        Long id
 ) { }
