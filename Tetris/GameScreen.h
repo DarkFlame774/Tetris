@@ -9,7 +9,7 @@
 #define BOARD_PADDING_SIDE 40
 #define PIECE_PADDING_UP 7
 #define PIECE_PADDING_SIDE 75
-
+ extern std::string playerName;
 
 class GameScreen {
 	public:

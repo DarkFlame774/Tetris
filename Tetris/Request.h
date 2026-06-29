@@ -75,3 +75,24 @@ class RegisterRequest : public Request {
 			: Request(hConnect, L"POST", L"/api/v1/player/register")
 		{}
 };
+
+class StartSessionRequest : public Request {
+	public:
+		StartSessionRequest(HINTERNET& hConnect)
+			: Request(hConnect, L"POST", L"/api/v1/game/start")
+		{}
+}; 
+
+class EndSessionRequest : public Request {
+	public:
+		EndSessionRequest(HINTERNET& hConnect)
+			: Request(hConnect, L"POST", L"/api/v1/game/end")
+		{}
+}; 
+
+class LeaderboardRequest : public Request {
+	public:
+		LeaderboardRequest(HINTERNET& hConnect)
+			: Request(hConnect, L"POST", L"/api/v1/game/leaderboard")
+		{}
+}; 

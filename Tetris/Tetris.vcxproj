@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="APIManager.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="mian.cpp" />

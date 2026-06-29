@@ -1,6 +1,7 @@
 #include "GameScreen.h"
 #include <string>
 
+
 int tetris_x = 1;
 int tetris_y = 42;
 std::string tetris_str = "!!TERMINAL TETRIS!!";
@@ -10,6 +11,7 @@ int ui_start_x = 3;
 
 int name_x = ui_start_x + 1;
 std::string name_str = "Player_1";
+std::string playerName = name_str;
 
 int score_x = ui_start_x + 2;
 std::string score_str = "";
@@ -88,8 +90,8 @@ void GameScreen::DrawScreen(Board* board) {
 				j += tetris_str.size()-1;
 			}
 			else if (i == name_x && j == left_text_pad) {
-				std::cout << name_str;
-				j += name_str.size()-1;
+				std::cout << playerName;
+				j += playerName.size()-1;
 			}
 			else if (i == score_x && j == left_text_pad) {
 				std::cout << score_str;
