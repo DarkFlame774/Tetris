@@ -51,9 +51,6 @@ public class PlayerService {
             throw new IllegalStateException("Wrong Password. Try again");
         }
 
-        return new LoginResponse(
-                player.getId(),
-                player.getPlayerName(),
-                player.getRegisteredAt().toLocalDate());
+        return new LoginResponse(player.getId());
     }
 }
