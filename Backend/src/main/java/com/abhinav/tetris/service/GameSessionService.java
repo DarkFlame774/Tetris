@@ -28,7 +28,7 @@ public class GameSessionService {
     public StartGameSessionResponse startGameSession(StartGameSessionRequest request){
         Player player = playerRepo.findById(request.id())
                 .orElseThrow(() ->
-                        new IllegalStateException("Invalid Session"));
+                        new IllegalArgumentException("Could not start the Session"));
 
         GameSession gameSession = GameSession.builder()
                 .player(player)
@@ -45,7 +45,7 @@ public class GameSessionService {
     public void endGameSession(EndGameSessionRequest request){
         GameSession gameSession = gameSessionRepository.findById(request.sessionId())
                 .orElseThrow(() ->
-                        new IllegalStateException("Unexpected Error During Saving Session Details"));
+                        new IllegalStateException("Session does not exist to be end."));
 
         LocalDateTime sessionEnd = LocalDateTime.now();
         Long duration = Duration.between(gameSession.getSessionStart(),sessionEnd).getSeconds();
