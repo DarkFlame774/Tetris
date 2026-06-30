@@ -17,11 +17,7 @@ public:
 	ll StartSession(json id);
 	void EndSession(ll sessionId, int linesCleared, int score);
 
-	//void GetDashboard(json id) {
-	//	std::string payload = id.dump();
-	//	LeaderboardRequest
-
-	//}
+	json GetDashboard(json id);
 
 
 };

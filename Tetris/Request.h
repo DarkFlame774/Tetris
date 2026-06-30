@@ -3,6 +3,7 @@
 #include <winhttp.h>
 #include <string>
 #include <json.hpp>
+
 typedef nlohmann::json json; 
 
 class Request {
@@ -93,6 +94,6 @@ class EndSessionRequest : public Request {
 class LeaderboardRequest : public Request {
 	public:
 		LeaderboardRequest(HINTERNET& hConnect)
-			: Request(hConnect, L"POST", L"/api/v1/game/leaderboard")
+			: Request(hConnect, L"GET", L"/api/v1/game/leaderboard")
 		{}
 }; 

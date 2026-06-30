@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
 
         @NotBlank
-        @Size(min = 1, max = 15)
+        @Size(min = 1, max = 10)
         String name,
 
         @NotBlank

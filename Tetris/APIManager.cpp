@@ -59,3 +59,10 @@ void APIManager::EndSession(ll sessionId, int linesCleared, int score) {
 	EndSessionRequest req(hConnect);
 	req.Send(payload);
 }
+
+json APIManager::GetDashboard(json id) {
+		std::string payload = id.dump();
+		LeaderboardRequest req(hConnect);
+		req.Send(payload);
+		return req.RecieveResponse();
+}

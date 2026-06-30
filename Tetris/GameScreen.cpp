@@ -13,10 +13,10 @@ int name_x = ui_start_x + 1;
 std::string name_str = "Player_1";
 std::string playerName = name_str;
 
-int score_x = ui_start_x + 2;
+int score_x = ui_start_x + 3;
 std::string score_str = "";
 
-int line_x = ui_start_x + 3;
+int line_x = ui_start_x + 4;
 std::string line_str = "";
 
 int ruleBox_start_x = 10;
@@ -59,11 +59,11 @@ int leaderboard_length = 7;
 int leaderboard_str_start_x = leaderboard_start_x + 2;
 int leaderboard_str_start_y = leaderboard_start_y + 1;
 int leaderboard_strs_size = 5;
-std::string leaderboard_strs[5] = {" 1 Player_123 - 100",
-								   " 2 Player_2 - 80",
-								   " 3 Player_3 - 60",
+std::string leaderboard_strs[5] = {" ",
+								   " ",
+								   " ",
 								   "---------------------",
-								   " 10 Me - 20"
+								   " "
 								   };
 
 void GameScreen::initScreen() {
@@ -234,4 +234,22 @@ void GameScreen::projectNextPiece(Piece* piece, int kind, int rot) {
 				mScreen[PIECE_PADDING_UP + i][PIECE_PADDING_SIDE + j] -= 1;
 		}
 	}
+}
+
+void GameScreen::PopulateDashboard(APIManager& apiManager,json id) {
+	json leaderboardData = apiManager.GetDashboard(id);
+	auto top_players = leaderboardData["topPlayers"];
+	int i = 0;
+	for (const auto& player : top_players) {
+		int rank = player["rank"];
+		std::string name = player["name"];
+		int score = player["bestScore"];
+		leaderboard_strs[i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
+		i++;
+	}
+	auto me = leaderboardData["currentPlayer"];
+	int rank = me["rank"];
+	std::string name = me["name"];
+	int score = me["bestScore"];
+	leaderboard_strs[4] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
 }

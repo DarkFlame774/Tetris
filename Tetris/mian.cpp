@@ -4,7 +4,7 @@
 #include "APIManager.h"
 
 json id;
-
+APIManager apiManager;
 int score = 0;
 int linesDestroy = 0;
 
@@ -119,11 +119,32 @@ void render() {
 	screen->projectBoard(board);
 	screen->projectStats(score,linesDestroy);
 	screen->projectNextPiece(piece, nextKind, nextRot);
+
 	screen->DrawScreen(board);
 
 }
 
 void start() {
+	std::string name;
+	std::string pass;
+	bool done = false;
+	int choice;
+	do {
+		std::cout << "1. Login      2. Sign Up\n";
+		std::cout << "Choose the Option: ";
+		std::cin >> choice;
+		std::cout << "PlayerName: ";
+		std::cin >> name;
+		std::cout << "Password: ";
+		std::cin >> pass;
+		if (choice == 2) { apiManager.Register(name, pass); done = true; }
+		else if (choice == 1) done = true;
+		else std::cout << "Invalid Option, Choose Again\n";
+	} while (!done);
+
+	id = apiManager.Login(name, pass);
+	playerName = name;
+
 	board = new Board();
 	screen = new GameScreen();
 	board->initBoard();
@@ -138,32 +159,13 @@ void start() {
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	std::cout << "TERMINAL TETRIS IINITIALIZING.......\n";
-	APIManager apiManager;
-	std::string name;
-	std::string pass;
-	bool done = false;
-	int choice;
-	do{
-		std::cout << "1. Login      2. Sign Up\n";
-		std::cout << "Choose the Option: ";
-		std::cin >> choice;
-		std::cout << "PlayerName: ";
-		std::cin >> name;
-		std::cout << "Password: ";
-		std::cin >> pass;
-		if(choice == 2) {apiManager.Register(name,pass); done = true;}
-		else if (choice == 1) done = true;
-		else std::cout << "Invalid Option, Choose Again\n";
-	}while(!done);
-
-	id = apiManager.Login(name,pass);
-	ll sessId = apiManager.StartSession(id);
-	playerName = name;
 	start();
+	ll sessId = apiManager.StartSession(id);
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
 		input();
 		update();
+		screen->PopulateDashboard(apiManager,id);
 		render();
 		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
