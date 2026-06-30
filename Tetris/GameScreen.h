@@ -7,7 +7,7 @@
 #define SCREEN_HEIGHT 28 // Mostly deafult total height of default windowed terminal
 #define BOARD_PADDING_UP 4
 #define BOARD_PADDING_SIDE 40
-#define PIECE_PADDING_UP 7
+#define PIECE_PADDING_UP 15
 #define PIECE_PADDING_SIDE 75
  extern std::string playerName;
 

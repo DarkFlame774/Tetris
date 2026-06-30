@@ -51,6 +51,21 @@ int nextPiece_start_x = pieceBox_start_x + pieceBox_length+1;
 int nextPiece_start_y = pieceBox_start_y - 2;
 std::string nextPiece_str = "!!Next Piece!!";
 
+int leaderboard_start_x = 2;
+int leaderboard_width = 22;
+int leaderboard_start_y = SCREEN_WIDTH-leaderboard_width-1;
+int leaderboard_length = 7;
+
+int leaderboard_str_start_x = leaderboard_start_x + 2;
+int leaderboard_str_start_y = leaderboard_start_y + 1;
+int leaderboard_strs_size = 5;
+std::string leaderboard_strs[5] = {" 1 Player_123 - 100",
+								   " 2 Player_2 - 80",
+								   " 3 Player_3 - 60",
+								   "---------------------",
+								   " 10 Me - 20"
+								   };
+
 void GameScreen::initScreen() {
 	for (int i = 0; i < SCREEN_HEIGHT; i++) {
 		for (int j = 0; j < SCREEN_WIDTH; j++) {
@@ -72,6 +87,12 @@ void GameScreen::initScreen() {
 			        && (j >= pieceBox_start_y && j <= pieceBox_start_y + pieceBox_width)
 					|| (j == pieceBox_start_y || j == pieceBox_start_y + pieceBox_width)
 					&& (i >= pieceBox_start_x && i < pieceBox_start_x + pieceBox_length)) {
+				mScreen[i][j] = BORDER;
+			}
+			 else if ( (i == leaderboard_start_x || i == leaderboard_start_x + leaderboard_length)
+			        && (j >= leaderboard_start_y && j <= leaderboard_start_y + leaderboard_width)
+					|| (j == leaderboard_start_y || j == leaderboard_start_y + leaderboard_width)
+					&& (i >= leaderboard_start_x && i < leaderboard_start_x + leaderboard_length)) {
 				mScreen[i][j] = BORDER;
 			}
 			else mScreen[i][j] = NETHER;
@@ -126,6 +147,10 @@ void GameScreen::DrawScreen(Board* board) {
 			else if (i == nextPiece_start_x && j == nextPiece_start_y) {
 				std::cout << nextPiece_str;
 				j += nextPiece_str.size()-1;
+			}
+			else if ((i >= leaderboard_str_start_x && i <= leaderboard_str_start_x + leaderboard_strs_size-1) && j == leaderboard_str_start_y) {
+				std::cout << leaderboard_strs[i-leaderboard_str_start_x];
+				j += leaderboard_strs[i - leaderboard_str_start_x].size()-1;
 			}
 			else if (mScreen[i][j] == FILLED || CheckForPiece(board, i, j)) std::cout << "#";
 			else if (mScreen[i][j] == FREE) {
