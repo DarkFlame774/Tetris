@@ -1,5 +1,5 @@
 #include "APIManager.h"
-#include <iostream>;
+#include <iostream>
 
 void CheckResponse(DWORD status, json& response)
 {
@@ -44,7 +44,6 @@ void APIManager::Register(std::string& name, std::string& pass) {
 }
 
 json APIManager::Login(std::string& name, std::string& pass) {
-	int success;
 	json requestBody;
 	requestBody["name"] = name;
 	requestBody["password"] = pass;
