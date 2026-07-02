@@ -237,19 +237,28 @@ void GameScreen::projectNextPiece(Piece* piece, int kind, int rot) {
 }
 
 void GameScreen::PopulateDashboard(APIManager& apiManager,json id) {
-	json leaderboardData = apiManager.GetDashboard(id);
-	auto top_players = leaderboardData["topPlayers"];
-	int i = 0;
-	for (const auto& player : top_players) {
-		int rank = player["rank"];
-		std::string name = player["name"];
-		int score = player["bestScore"];
-		leaderboard_strs[i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
-		i++;
+	try
+	{
+		json leaderboardData = apiManager.GetDashboard(id);
+		auto top_players = leaderboardData["topPlayers"];
+		int i = 0;
+		for (const auto& player : top_players) {
+			int rank = player["rank"];
+			std::string name = player["name"];
+			int score = player["bestScore"];
+			leaderboard_strs[i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
+			i++;
+		}
+		auto me = leaderboardData["currentPlayer"];
+		int rank = me["rank"];
+		std::string name = me["name"];
+		int score = me["bestScore"];
+		leaderboard_strs[++i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
 	}
-	auto me = leaderboardData["currentPlayer"];
-	int rank = me["rank"];
-	std::string name = me["name"];
-	int score = me["bestScore"];
-	leaderboard_strs[4] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
+	catch (const std::exception& ex)
+	{
+		for (int i = 0; i < leaderboard_strs_size; i++) {
+			leaderboard_strs[i] = "Error ####";
+		}
+	}
 }

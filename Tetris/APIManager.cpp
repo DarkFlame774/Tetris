@@ -1,4 +1,13 @@
 #include "APIManager.h"
+#include <iostream>;
+
+void CheckResponse(DWORD status, json& response)
+{
+	if (status != 200 && status != 201) {
+		std::string message = response["message"];
+		throw std::runtime_error(message.c_str());
+	}
+}
 
 APIManager::APIManager() {
 	hSession = WinHttpOpen(
@@ -27,26 +36,32 @@ void APIManager::Register(std::string& name, std::string& pass) {
 	requestBody["name"] = name;
 	requestBody["password"] = pass;
 	std::string payload = requestBody.dump();
+	json response;
 	RegisterRequest req(hConnect);
-	req.Send(payload);
+	response = req.Execute(payload);
+	DWORD status = req.GetStatus();
+	CheckResponse(status, response);
 }
 
 json APIManager::Login(std::string& name, std::string& pass) {
+	int success;
 	json requestBody;
 	requestBody["name"] = name;
 	requestBody["password"] = pass;
 	std::string payload = requestBody.dump();
 	LoginRequest req(hConnect);
-	req.Send(payload);
-	json response = req.RecieveResponse();
+	json response = req.Execute(payload);
+	DWORD status = req.GetStatus();
+	CheckResponse(status, response);
 	return response;
 }
 
 ll APIManager::StartSession(json id) {
 	std::string payload = id.dump();
 	StartSessionRequest req(hConnect);
-	req.Send(payload);
-	json response = req.RecieveResponse();
+	json response = req.Execute(payload);
+	DWORD status = req.GetStatus();
+	CheckResponse(status, response);
 	return response["sessionId"];
 }
 
@@ -57,12 +72,16 @@ void APIManager::EndSession(ll sessionId, int linesCleared, int score) {
 	body["score"] = score;
 	std::string payload = body.dump();
 	EndSessionRequest req(hConnect);
-	req.Send(payload);
+	json response = req.Execute(payload);
+	DWORD status = req.GetStatus();
+	CheckResponse(status, response);
 }
 
 json APIManager::GetDashboard(json id) {
 		std::string payload = id.dump();
 		LeaderboardRequest req(hConnect);
-		req.Send(payload);
-		return req.RecieveResponse();
+		json response = req.Execute(payload);
+		DWORD status = req.GetStatus();
+		CheckResponse(status, response);
+		return response;
 }

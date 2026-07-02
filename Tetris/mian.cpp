@@ -1,7 +1,6 @@
 #pragma comment(lib, "winhttp.lib")
 #include <Windows.h>
 #include "GameScreen.h"
-#include "APIManager.h"
 
 json id;
 APIManager apiManager;
@@ -127,7 +126,7 @@ void render() {
 void start() {
 	std::string name;
 	std::string pass;
-	bool done = false;
+	bool done = true;
 	int choice;
 	do {
 		std::cout << "1. Login      2. Sign Up\n";
@@ -137,12 +136,26 @@ void start() {
 		std::cin >> name;
 		std::cout << "Password: ";
 		std::cin >> pass;
-		if (choice == 2) { apiManager.Register(name, pass); done = true; }
-		else if (choice == 1) done = true;
-		else std::cout << "Invalid Option, Choose Again\n";
+		try
+		{
+			if (choice == 2) {
+				apiManager.Register(name, pass);
+				id = apiManager.Login(name, pass);
+			}
+			else if (choice == 1){
+				id = apiManager.Login(name, pass);
+			}
+			else{
+				std::cout << "Invalid Option, Choose Again\n";
+				done = false;
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << ex.what() << "\n\n";
+			done = false;
+		}
 	} while (!done);
-
-	id = apiManager.Login(name, pass);
 	playerName = name;
 
 	board = new Board();
@@ -158,9 +171,18 @@ void start() {
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
-	std::cout << "TERMINAL TETRIS IINITIALIZING.......\n";
+	std::cout << "TERMINAL TETRIS INITIALIZING.......\n";
 	start();
-	ll sessId = apiManager.StartSession(id);
+	ll sessId = 0;
+	try
+	{
+		sessId = apiManager.StartSession(id);
+	}
+	catch (const std::exception& ex)
+	{
+		std::cout << ex.what() << ", Restart the Game again.\n\n";
+		isrunning = false;
+	}
 	while (isrunning) {
 		std::cout << "\033[J\033[H";
 		input();
@@ -170,7 +192,16 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(120));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
-	apiManager.EndSession(sessId,linesDestroy,score);
+	if (sessId != 0) {
+		try
+		{
+			apiManager.EndSession(sessId, linesDestroy, score);
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Error in Logging the session, due to " << ex.what() << "\n\n";
+		}
+	}
 	std::cin.get();
 	return 0;
 }

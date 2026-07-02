@@ -28,9 +28,10 @@ class Request {
 		}
 
 
-	public:
-		bool Send(std::string& payload) {
-			int err = WinHttpSendRequest(
+	private:
+
+		void Send(std::string& payload) {
+			if (!WinHttpSendRequest(
 				request,
 				L"Content-Type: application/json\r\n",
 				(DWORD)-1L,
@@ -38,28 +39,57 @@ class Request {
 				(DWORD)payload.size(),
 				(DWORD)payload.size(),
 				0
-			);
-			return err;
+			)) 
+			{
+				throw std::runtime_error(" Could not Send the request!!! , Check Internet connection.");
+			}
 		}
 
 		json RecieveResponse() {
-			WinHttpReceiveResponse(
+			if (!WinHttpReceiveResponse(
 				request,
 				nullptr
-			);
-
+			)) 
+			{
+				throw std::runtime_error("Error Recieving the request.");
+			}
 			DWORD bytesRead = 0;
 
-			WinHttpReadData(
+			if (!WinHttpReadData(
 				request,
 				buffer,
 				sizeof(buffer),
 				&bytesRead
-			);
+			)) 
+			{
+				throw std::runtime_error("Error reading data");
+			}
 			if(bytesRead == 0) return json{};
 			std::string str(buffer, bytesRead);
 			json response = json::parse(std::string(buffer, bytesRead));
 			return response;
+		}
+
+	public:
+
+		DWORD GetStatus() {
+			DWORD statusCode;
+			DWORD size = sizeof(statusCode);
+			WinHttpQueryHeaders(
+				request,
+				WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
+				WINHTTP_HEADER_NAME_BY_INDEX,
+				&statusCode,
+				&size,
+				WINHTTP_NO_HEADER_INDEX
+			);
+			return statusCode;
+		}
+
+		json Execute(std::string& payload) {
+			Send(payload);
+			json response = RecieveResponse();
+			return response;	
 		}
 };
 
