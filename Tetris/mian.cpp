@@ -1,6 +1,13 @@
 #pragma comment(lib, "winhttp.lib")
 #include <Windows.h>
 #include "GameScreen.h"
+typedef std::chrono::steady_clock sclock;
+typedef std::chrono::milliseconds milisec;
+typedef std::chrono::steady_clock::time_point timep;
+
+timep now = sclock::now();
+timep lastGameUpdate = now;
+timep lastLeaderboardUpdate = now;
 
 json id;
 APIManager apiManager;
@@ -129,6 +136,7 @@ void start() {
 	bool done = true;
 	int choice;
 	do {
+		done = true;
 		std::cout << "1. Login      2. Sign Up\n";
 		std::cout << "Choose the Option: ";
 		std::cin >> choice;
@@ -184,12 +192,19 @@ int main() {
 		isrunning = false;
 	}
 	while (isrunning) {
-		std::cout << "\033[J\033[H";
+		now = sclock::now();
 		input();
-		update();
-		screen->PopulateDashboard(apiManager,id);
-		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(120));
+		if (now - lastGameUpdate >= milisec(120)) {
+			std::cout << "\033[J\033[H";
+			update();
+			if (now - lastLeaderboardUpdate >= milisec(10000)) {
+				screen->PopulateDashboard(apiManager, id);
+				lastLeaderboardUpdate = now;
+			}
+			render();
+			lastGameUpdate = now;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
 	if (sessId != 0) {
