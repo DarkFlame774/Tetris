@@ -1,6 +1,16 @@
+#pragma comment(lib, "winhttp.lib")
 #include <Windows.h>
 #include "GameScreen.h"
+typedef std::chrono::steady_clock sclock;
+typedef std::chrono::milliseconds milisec;
+typedef std::chrono::steady_clock::time_point timep;
 
+timep now = sclock::now();
+timep lastGameUpdate = now;
+timep lastLeaderboardUpdate = now;
+
+json id;
+APIManager apiManager;
 int score = 0;
 int linesDestroy = 0;
 
@@ -115,11 +125,47 @@ void render() {
 	screen->projectBoard(board);
 	screen->projectStats(score,linesDestroy);
 	screen->projectNextPiece(piece, nextKind, nextRot);
+
 	screen->DrawScreen(board);
 
 }
 
 void start() {
+	std::string name;
+	std::string pass;
+	bool done = true;
+	int choice;
+	do {
+		done = true;
+		std::cout << "1. Login      2. Sign Up\n";
+		std::cout << "Choose the Option: ";
+		std::cin >> choice;
+		std::cout << "PlayerName: ";
+		std::cin >> name;
+		std::cout << "Password: ";
+		std::cin >> pass;
+		try
+		{
+			if (choice == 2) {
+				apiManager.Register(name, pass);
+				id = apiManager.Login(name, pass);
+			}
+			else if (choice == 1){
+				id = apiManager.Login(name, pass);
+			}
+			else{
+				std::cout << "Invalid Option, Choose Again\n";
+				done = false;
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << ex.what() << "\n\n";
+			done = false;
+		}
+	} while (!done);
+	playerName = name;
+
 	board = new Board();
 	screen = new GameScreen();
 	board->initBoard();
@@ -133,15 +179,44 @@ void start() {
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
+	std::cout << "TERMINAL TETRIS INITIALIZING.......\n";
 	start();
+	ll sessId = 0;
+	try
+	{
+		sessId = apiManager.StartSession(id);
+	}
+	catch (const std::exception& ex)
+	{
+		std::cout << ex.what() << ", Restart the Game again.\n\n";
+		isrunning = false;
+	}
 	while (isrunning) {
-		std::cout << "\033[J\033[H";
+		now = sclock::now();
 		input();
-		update();
-		render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(120));
+		if (now - lastGameUpdate >= milisec(120)) {
+			std::cout << "\033[J\033[H";
+			update();
+			if (now - lastLeaderboardUpdate >= milisec(10000)) {
+				screen->PopulateDashboard(apiManager, id);
+				lastLeaderboardUpdate = now;
+			}
+			render();
+			lastGameUpdate = now;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	std::cout << "Game Over!! Thanks for Playing.";
+	if (sessId != 0) {
+		try
+		{
+			apiManager.EndSession(sessId, linesDestroy, score);
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Error in Logging the session, due to " << ex.what() << "\n\n";
+		}
+	}
 	std::cin.get();
 	return 0;
 }

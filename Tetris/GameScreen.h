@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "APIManager.h"
 #include "Board.h"
 #include <chrono>
 #include <thread>
@@ -7,10 +8,9 @@
 #define SCREEN_HEIGHT 28 // Mostly deafult total height of default windowed terminal
 #define BOARD_PADDING_UP 4
 #define BOARD_PADDING_SIDE 40
-#define PIECE_PADDING_UP 7
+#define PIECE_PADDING_UP 15
 #define PIECE_PADDING_SIDE 75
-
-
+ extern std::string playerName;
 class GameScreen {
 	public:
 		void initScreen();
@@ -22,6 +22,7 @@ class GameScreen {
 		void projectNextPiece(Piece* piece, int kind, int rot);
 		bool CheckForPiece(Board* board,int x, int y);
 		void Flashing(Board* board);
+		void PopulateDashboard(APIManager& apiManager,json id);
 
 	private:
 		void Flash();

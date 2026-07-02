@@ -1,6 +1,7 @@
 #include "GameScreen.h"
 #include <string>
 
+
 int tetris_x = 1;
 int tetris_y = 42;
 std::string tetris_str = "!!TERMINAL TETRIS!!";
@@ -10,11 +11,12 @@ int ui_start_x = 3;
 
 int name_x = ui_start_x + 1;
 std::string name_str = "Player_1";
+std::string playerName = name_str;
 
-int score_x = ui_start_x + 2;
+int score_x = ui_start_x + 3;
 std::string score_str = "";
 
-int line_x = ui_start_x + 3;
+int line_x = ui_start_x + 4;
 std::string line_str = "";
 
 int ruleBox_start_x = 10;
@@ -49,6 +51,21 @@ int nextPiece_start_x = pieceBox_start_x + pieceBox_length+1;
 int nextPiece_start_y = pieceBox_start_y - 2;
 std::string nextPiece_str = "!!Next Piece!!";
 
+int leaderboard_start_x = 2;
+int leaderboard_width = 22;
+int leaderboard_start_y = SCREEN_WIDTH-leaderboard_width-1;
+int leaderboard_length = 7;
+
+int leaderboard_str_start_x = leaderboard_start_x + 2;
+int leaderboard_str_start_y = leaderboard_start_y + 1;
+int leaderboard_strs_size = 5;
+std::string leaderboard_strs[5] = {" ",
+								   " ",
+								   " ",
+								   "---------------------",
+								   " "
+								   };
+
 void GameScreen::initScreen() {
 	for (int i = 0; i < SCREEN_HEIGHT; i++) {
 		for (int j = 0; j < SCREEN_WIDTH; j++) {
@@ -72,6 +89,12 @@ void GameScreen::initScreen() {
 					&& (i >= pieceBox_start_x && i < pieceBox_start_x + pieceBox_length)) {
 				mScreen[i][j] = BORDER;
 			}
+			 else if ( (i == leaderboard_start_x || i == leaderboard_start_x + leaderboard_length)
+			        && (j >= leaderboard_start_y && j <= leaderboard_start_y + leaderboard_width)
+					|| (j == leaderboard_start_y || j == leaderboard_start_y + leaderboard_width)
+					&& (i >= leaderboard_start_x && i < leaderboard_start_x + leaderboard_length)) {
+				mScreen[i][j] = BORDER;
+			}
 			else mScreen[i][j] = NETHER;
 		}
 	}
@@ -88,8 +111,8 @@ void GameScreen::DrawScreen(Board* board) {
 				j += tetris_str.size()-1;
 			}
 			else if (i == name_x && j == left_text_pad) {
-				std::cout << name_str;
-				j += name_str.size()-1;
+				std::cout << playerName;
+				j += playerName.size()-1;
 			}
 			else if (i == score_x && j == left_text_pad) {
 				std::cout << score_str;
@@ -124,6 +147,10 @@ void GameScreen::DrawScreen(Board* board) {
 			else if (i == nextPiece_start_x && j == nextPiece_start_y) {
 				std::cout << nextPiece_str;
 				j += nextPiece_str.size()-1;
+			}
+			else if ((i >= leaderboard_str_start_x && i <= leaderboard_str_start_x + leaderboard_strs_size-1) && j == leaderboard_str_start_y) {
+				std::cout << leaderboard_strs[i-leaderboard_str_start_x];
+				j += leaderboard_strs[i - leaderboard_str_start_x].size()-1;
 			}
 			else if (mScreen[i][j] == FILLED || CheckForPiece(board, i, j)) std::cout << "#";
 			else if (mScreen[i][j] == FREE) {
@@ -205,6 +232,33 @@ void GameScreen::projectNextPiece(Piece* piece, int kind, int rot) {
 			mScreen[PIECE_PADDING_UP + i][PIECE_PADDING_SIDE + j] = piece->mPiece[kind][rot][i][j] + 2;
 			if (i == piece->GetPiecePivotX(kind) && j == piece->GetPiecePivotY(kind)) 
 				mScreen[PIECE_PADDING_UP + i][PIECE_PADDING_SIDE + j] -= 1;
+		}
+	}
+}
+
+void GameScreen::PopulateDashboard(APIManager& apiManager,json id) {
+	try
+	{
+		json leaderboardData = apiManager.GetDashboard(id);
+		auto top_players = leaderboardData["topPlayers"];
+		int i = 0;
+		for (const auto& player : top_players) {
+			int rank = player["rank"];
+			std::string name = player["name"];
+			int score = player["bestScore"];
+			leaderboard_strs[i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
+			i++;
+		}
+		auto me = leaderboardData["currentPlayer"];
+		int rank = me["rank"];
+		std::string name = me["name"];
+		int score = me["bestScore"];
+		leaderboard_strs[++i] = " " + std::to_string(rank) + " " + name + " - " + std::to_string(score);
+	}
+	catch (const std::exception& ex)
+	{
+		for (int i = 0; i < leaderboard_strs_size; i++) {
+			leaderboard_strs[i] = "Error ####";
 		}
 	}
 }

@@ -4,7 +4,5 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public record LoginResponse(
-        Long id,
-        String name,
-        LocalDate registeredAt
+        Long id
 ) { }

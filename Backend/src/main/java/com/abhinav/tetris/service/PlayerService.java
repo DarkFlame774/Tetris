@@ -48,12 +48,9 @@ public class PlayerService {
                         new IllegalStateException("Player does not exist"));
 
         if(!passwordEncoder.matches(request.password(), player.getHashPasswd())){
-            throw new IllegalStateException("Wrong Password. Try again");
+            throw new IllegalArgumentException("Wrong Password. Try again");
         }
 
-        return new LoginResponse(
-                player.getId(),
-                player.getPlayerName(),
-                player.getRegisteredAt().toLocalDate());
+        return new LoginResponse(player.getId());
     }
 }
