@@ -199,7 +199,7 @@ int main() {
 		if (now - lastGameUpdate >= milisec(120)) {
 			std::cout << "\033[J\033[H";
 			update();
-			if (now - lastLeaderboardUpdate >= milisec(10000)) {
+			if (now - lastLeaderboardUpdate >= milisec(20000)) {
 				screen->PopulateDashboard(apiManager, id);
 				lastLeaderboardUpdate = now;
 			}
