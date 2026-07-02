@@ -20,8 +20,8 @@ APIManager::APIManager() {
 
 	hConnect = WinHttpConnect(
 		hSession,
-		L"localhost",
-		8080,
+		std::wstring(g_config.backendHost.begin(),g_config.backendHost.end()).c_str(),
+		g_config.backendPort,
 		0
 	);
 }

@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <winhttp.h>
 #include <string>
+#include "Config.h"
 #include <json.hpp>
 
 typedef nlohmann::json json; 
@@ -16,6 +17,11 @@ class Request {
 		}
 
 		Request(HINTERNET& hConnect, const LPCWSTR& method, const LPCWSTR& url) {
+			DWORD flags = 0;
+			if (g_config.useHttps)
+			{
+				flags |= WINHTTP_FLAG_SECURE;
+			}
 			request = WinHttpOpenRequest(
 				hConnect,
 				method,
@@ -23,7 +29,7 @@ class Request {
 				nullptr,
 				WINHTTP_NO_REFERER,
 				WINHTTP_DEFAULT_ACCEPT_TYPES,
-				0
+				flags
 			);
 		}
 
