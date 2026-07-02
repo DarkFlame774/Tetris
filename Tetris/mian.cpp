@@ -5,6 +5,8 @@ typedef std::chrono::steady_clock sclock;
 typedef std::chrono::milliseconds milisec;
 typedef std::chrono::steady_clock::time_point timep;
 
+Config g_config;
+
 timep now = sclock::now();
 timep lastGameUpdate = now;
 timep lastLeaderboardUpdate = now;

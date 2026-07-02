@@ -137,6 +137,8 @@
   <ItemGroup>
     <ClInclude Include="APIManager.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Config-demo.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="Pieces.h" />
     <ClInclude Include="Request.h" />
