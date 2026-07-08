@@ -4,10 +4,6 @@ A modern **terminal-based Tetris** built in **C++**, featuring online player acc
 
 The project started as a classic console game and evolved into a full-stack application combining native C++, Spring Boot, PostgreSQL, and REST APIs.
 
-<p align="center">
-  <img src="asset/Demo.png" width="500" alt="Tetris Demo">
-</p>
-
 ---
 
 # Features
@@ -79,7 +75,7 @@ Download the latest executable from the **Releases** page.
 
 ---
 
-# 📸 Preview
+# Preview
 
 <p align="center">
   <img src="asset/Demo.png" width="500" alt="Gameplay">
